@@ -36,25 +36,6 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        -2096,
-        624
-      ],
-      "id": "e796267b-6c36-48df-87a4-8122c0dd3def",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "fI1w759unI7eXoch",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -108,7 +89,7 @@
             {
               "id": "702a1fac-ea2a-4b73-b0e1-3ea5cc06f944",
               "name": "emissao",
-              "value": "={{ $json.output.emissao }}",
+              "value": "={{ DateTime.fromFormat($json.output.emissao, 'dd/MM/yyyy').toISODate() }}",
               "type": "string"
             },
             {
@@ -120,7 +101,7 @@
             {
               "id": "0c2715ab-6be1-4039-8eda-b69c708ad3c0",
               "name": "vencimento",
-              "value": "={{ $json.output.vencimento }}",
+              "value": "={{ DateTime.fromFormat($json.output.vencimento, 'dd/MM/yyyy').toISODate() }}",
               "type": "string"
             },
             {
@@ -294,7 +275,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "87f99a65-77c5-488b-9ff7-de1eddb40ecd",
+                    "id": "5f75977c-bc49-4eef-8cfd-c06dcbd5546d",
                     "leftValue": "",
                     "rightValue": "",
                     "operator": {
@@ -329,7 +310,7 @@
             {
               "id": "b2fc9fb3-abda-44bb-ba32-0b589f8944e2",
               "name": "Prefixo cnpj",
-              "value": "={{ $json['CNPJ fornecedor'].slice(0,6).replace(\".\", \"\") }}",
+              "value": "={{ $('Edit Fields1').item.json.CNPJ_fornecedor.slice(0,6).replace(\".\", \"\") }}",
               "type": "string"
             },
             {
@@ -341,19 +322,7 @@
             {
               "id": "2aa5551b-24c3-4e92-ade6-223d22418d53",
               "name": "Novo nome do arquivo ",
-              "value": "={{ $('Edit Fields1').item.json.tipo_doc.toSentenceCase().replaceAll(\"/\", \" - \") }} - R$ {{ $('Edit Fields1').item.json.valor }} - venc {{ $('Edit Fields1').item.json.vencimento.replaceAll(\"/\", \".\") + \".pdf\" }}",
-              "type": "string"
-            },
-            {
-              "id": "63b51806-f49d-4c10-b4b5-cef5d2b4e103",
-              "name": "Ano",
-              "value": "={{ $('Edit Fields1').item.json.vencimento.split(\"/\")[2] }}",
-              "type": "string"
-            },
-            {
-              "id": "fd9e998d-db97-4650-84c9-9de92a78ab4f",
-              "name": "Mês",
-              "value": "={{ $('Edit Fields1').item.json.vencimento.split(\"/\")[1] }}",
+              "value": "={{ $('Edit Fields1').item.json.tipo_doc.toSentenceCase().replace(\"/\", \"-\") }} - R$ {{ $('Edit Fields1').item.json.valor }}- Ped xxxxxxxx - venc {{ $('Edit Fields1').item.json.vencimento.replaceAll(\"/\", \".\") + \".pdf\" }}",
               "type": "string"
             }
           ]
@@ -376,8 +345,20 @@
             {
               "id": "acda8add-3a5d-4fb7-ad2e-b443eb986d6a",
               "name": "data",
-              "value": "={{ $(\"Loop Over Items\").item.binary.data }}",
+              "value": "={{ $('Read/Write Files from Disk').item.binary.data }}",
               "type": "binary"
+            },
+            {
+              "id": "2aeb7c19-2bf2-40aa-aa37-a4c52921df8f",
+              "name": "Ano",
+              "value": "={{ $('Edit Fields1').item.json.vencimento.split(\"-\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "a819ce98-7b3c-453e-a04c-b96cbf75b208",
+              "name": "Mês",
+              "value": "={{ $('Information Extractor').item.json.output.vencimento.split(\"/\")[1] }}",
+              "type": "string"
             }
           ]
         },
@@ -399,8 +380,20 @@
             {
               "id": "acda8add-3a5d-4fb7-ad2e-b443eb986d6a",
               "name": "data",
-              "value": "={{ $(\"Loop Over Items\").item.binary.data }}",
+              "value": "={{ $('Read/Write Files from Disk').item.binary.data }}",
               "type": "binary"
+            },
+            {
+              "id": "ed634e0c-36d0-48aa-9e4e-54bebf51cd34",
+              "name": "Ano",
+              "value": "={{ $('Edit Fields1').item.json.vencimento.split(\"-\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "cce27f3f-df8f-4075-910d-330659948c9d",
+              "name": "Mês",
+              "value": "={{ $('Information Extractor').item.json.output.vencimento.split(\"/\")[1] }}",
+              "type": "string"
             }
           ]
         },
@@ -422,13 +415,19 @@
             {
               "id": "acda8add-3a5d-4fb7-ad2e-b443eb986d6a",
               "name": "data",
-              "value": "={{ $(\"Loop Over Items\").item.binary.data }}",
+              "value": "={{ $('Read/Write Files from Disk').item.binary.data }}",
               "type": "binary"
             },
             {
               "id": "0a4e15d0-e276-45a5-a519-b40799f1b184",
               "name": "Ano",
-              "value": "={{ $('Edit Fields1').item.json.vencimento }}",
+              "value": "={{ $('Edit Fields1').item.json.vencimento.split(\"-\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "c99187b6-db85-41cc-99be-5a3c990fe134",
+              "name": "Mês",
+              "value": "={{ $('Information Extractor').item.json.output.vencimento.split(\"/\")[1] }}",
               "type": "string"
             }
           ]
@@ -451,8 +450,20 @@
             {
               "id": "acda8add-3a5d-4fb7-ad2e-b443eb986d6a",
               "name": "data",
-              "value": "={{ $(\"Loop Over Items\").item.binary.data }}",
+              "value": "={{ $('Read/Write Files from Disk').item.binary.data }}",
               "type": "binary"
+            },
+            {
+              "id": "dfb35c85-4ad1-424f-900c-53326b4c7057",
+              "name": "Ano",
+              "value": "={{ $('Edit Fields1').item.json.vencimento.split(\"-\")[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "d100b053-1561-4839-bf9d-5d6a7f874967",
+              "name": "Mês",
+              "value": "={{ $('Information Extractor').item.json.output.vencimento.split(\"/\")[1] }}",
+              "type": "string"
             }
           ]
         },
@@ -469,12 +480,12 @@
     },
     {
       "parameters": {
-        "command": "=mkdir -p \"/files/Operadora_nao_mapeada/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_nao_mapeada/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
+        "command": "=mkdir -p \"/files/Operadora_nao_mapeada/{{ $json.Ano }}/{{ $json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_nao_mapeada/{{ $json.Ano }}/{{ $json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        192,
+        176,
         784
       ],
       "id": "86b16a14-20b3-4e98-a618-a61342f4f69a",
@@ -482,7 +493,7 @@
     },
     {
       "parameters": {
-        "command": "=mkdir -p \"/files/Operadora_Z/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_Z/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
+        "command": "=mkdir -p \"/files/Operadora_Z/{{ $json.Ano }}/{{ $json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_Z/{{ $json.Ano }}/{{ $json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -495,7 +506,7 @@
     },
     {
       "parameters": {
-        "command": "=mkdir -p \"/files/Operadora_Y/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_Y/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
+        "command": "=mkdir -p \"/files/Operadora_Y/{{ $json.Ano }}/{{ $json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_Y/{{ $json.Ano }}/{{ $json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -508,12 +519,12 @@
     },
     {
       "parameters": {
-        "command": "=mkdir -p \"/files/Operadora_X/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_X/{{ $('Edit Fields2').item.json.Ano }}/{{ $('Edit Fields2').item.json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
+        "command": "=mkdir -p \"/files/Operadora_X/{{ $json.Ano }}/{{ $json.Mês }}\" && mv \"/files/naoLidos/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\" \"/files/Operadora_X/{{ $json.Ano }}/{{ $json.Mês }}/{{ $('Edit Fields2').item.json['Novo nome do arquivo '] }}\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        192,
+        176,
         112
       ],
       "id": "6ad5d78b-e375-4d91-8960-f0a3dd9f32d4",
@@ -521,7 +532,7 @@
     },
     {
       "parameters": {
-        "command": "=mv '/files/naoLidos/{{ $json[\"Nome do arquivo\"] }}' '/files/naoLidos/{{ $json[\"Novo nome do arquivo \"] }}'\n"
+        "command": "=mv '/files/naoLidos/{{ $json[\"Nome do arquivo\"] }}' '/files/naoLidos/{{ $json['Novo nome do arquivo '] }}' \n"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -604,6 +615,147 @@
       ],
       "id": "aceb0aad-18b7-49db-b771-b8857d22f643",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into TB_FATURAS\n(CNPJ_FORN\n\t,RAZAO_SOCIAL_FORN\t\n\t,FILIAL\n\t,CNPJ_FILIAL\n\t,ENDERECO_FATURA\n\t,ENDERECO_INSTALACAO\n\t,NUMERO_NF\n\t,EMISSAO\n\t,VALOR_TOTAL\n\t,VENCIMENTO\n\t,REFERENCIA\n\t,CONTRATO\n\t,CODIGO_BARRAS)\nvalues\n('{{ $('Edit Fields1').item.json.CNPJ_fornecedor }}'\n  ,'{{ $('Edit Fields1').item.json.razao_social_fornecedor }}'\n  ,'{{ $('Edit Fields1').item.json.razao_social_sacado }}' \n  ,'{{ $('Edit Fields1').item.json.CNPJ_sacado }}'\n  ,'{{ $('Edit Fields1').item.json.endereco_fatura }}'\n  ,'{{ $('Edit Fields1').item.json.endereco_instalacao }}'\n  ,'{{ $('Edit Fields1').item.json.numero_NF }}'\n  ,'{{ $('Edit Fields1').item.json.emissao }}'\n  ,{{ $('Edit Fields1').item.json.valor.replaceAll(\",\",\".\")}}\n  ,'{{ $('Edit Fields1').item.json.vencimento }}'\n  ,'{{ $('Edit Fields1').item.json.referencia }}'\n  ,'{{ $('Edit Fields1').item.json.contrato }}'\n  ,'{{ $('Edit Fields1').item.json.codigo_barra }}')",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        112
+      ],
+      "id": "45e57d9d-85db-45d2-8ab1-ff77ff79555c",
+      "name": "Microsoft SQL1",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwQP8J22rOQ1qDXn",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -1968,
+        656
+      ],
+      "id": "08afaece-8ec0-4b26-a500-3ad1c90d1543",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "IVqDpBYyAyMMekFC",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -2128,
+        640
+      ],
+      "id": "bac32b05-667f-4a69-82ec-fa1994da2a87",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "fI1w759unI7eXoch",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into TB_FATURAS\n(CNPJ_FORN\n\t,RAZAO_SOCIAL_FORN\t\n\t,FILIAL\n\t,CNPJ_FILIAL\n\t,ENDERECO_FATURA\n\t,ENDERECO_INSTALACAO\n\t,NUMERO_NF\n\t,EMISSAO\n\t,VALOR_TOTAL\n\t,VENCIMENTO\n\t,REFERENCIA\n\t,CONTRATO\n\t,CODIGO_BARRAS)\nvalues\n({{ $('Edit Fields1').item.json.CNPJ_fornecedor }}\n  ,{{ $('Edit Fields1').item.json.razao_social_fornecedor }}\n  ,{{ $('Edit Fields1').item.json.razao_social_sacado }}  \n  ,{{ $('Edit Fields1').item.json.CNPJ_sacado }}\n  ,{{ $('Edit Fields1').item.json.endereco_fatura }}\n  ,{{ $('Edit Fields1').item.json.endereco_instalacao }}\n  ,{{ $('Edit Fields1').item.json.numero_NF }}\n  ,{{ $('Edit Fields1').item.json.emissao }}\n  ,{{ $('Edit Fields1').item.json.valor }}\n  ,{{ $('Edit Fields1').item.json.vencimento }}\n  ,{{ $('Edit Fields1').item.json.referencia }}\n  ,{{ $('Edit Fields1').item.json.contrato }}\n  ,{{ $('Edit Fields1').item.json.codigo_barra }})",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        320
+      ],
+      "id": "20d67814-bb64-409d-ab92-c3f0a42d84c9",
+      "name": "Microsoft SQL2",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwQP8J22rOQ1qDXn",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into TB_FATURAS\n(CNPJ_FORN\n\t,RAZAO_SOCIAL_FORN\t\n\t,FILIAL\n\t,CNPJ_FILIAL\n\t,ENDERECO_FATURA\n\t,ENDERECO_INSTALACAO\n\t,NUMERO_NF\n\t,EMISSAO\n\t,VALOR_TOTAL\n\t,VENCIMENTO\n\t,REFERENCIA\n\t,CONTRATO\n\t,CODIGO_BARRAS)\nvalues\n({{ $('Edit Fields1').item.json.CNPJ_fornecedor }}\n  ,{{ $('Edit Fields1').item.json.razao_social_fornecedor }}\n  ,{{ $('Edit Fields1').item.json.razao_social_sacado }}  \n  ,{{ $('Edit Fields1').item.json.CNPJ_sacado }}\n  ,{{ $('Edit Fields1').item.json.endereco_fatura }}\n  ,{{ $('Edit Fields1').item.json.endereco_instalacao }}\n  ,{{ $('Edit Fields1').item.json.numero_NF }}\n  ,{{ $('Edit Fields1').item.json.emissao }}\n  ,{{ $('Edit Fields1').item.json.valor }}\n  ,{{ $('Edit Fields1').item.json.vencimento }}\n  ,{{ $('Edit Fields1').item.json.referencia }}\n  ,{{ $('Edit Fields1').item.json.contrato }}\n  ,{{ $('Edit Fields1').item.json.codigo_barra }})",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        560
+      ],
+      "id": "0fffb9ec-7915-43a4-a2a3-8ee74d162df8",
+      "name": "Microsoft SQL3",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwQP8J22rOQ1qDXn",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into TB_FATURAS\n(CNPJ_FORN\n\t,RAZAO_SOCIAL_FORN\t\n\t,FILIAL\n\t,CNPJ_FILIAL\n\t,ENDERECO_FATURA\n\t,ENDERECO_INSTALACAO\n\t,NUMERO_NF\n\t,EMISSAO\n\t,VALOR_TOTAL\n\t,VENCIMENTO\n\t,REFERENCIA\n\t,CONTRATO\n\t,CODIGO_BARRAS)\nvalues\n({{ $('Edit Fields1').item.json.CNPJ_fornecedor }}\n  ,{{ $('Edit Fields1').item.json.razao_social_fornecedor }}\n  ,{{ $('Edit Fields1').item.json.razao_social_sacado }}  \n  ,{{ $('Edit Fields1').item.json.CNPJ_sacado }}\n  ,{{ $('Edit Fields1').item.json.endereco_fatura }}\n  ,{{ $('Edit Fields1').item.json.endereco_instalacao }}\n  ,{{ $('Edit Fields1').item.json.numero_NF }}\n  ,{{ $('Edit Fields1').item.json.emissao }}\n  ,{{ $('Edit Fields1').item.json.valor }}\n  ,{{ $('Edit Fields1').item.json.vencimento }}\n  ,{{ $('Edit Fields1').item.json.referencia }}\n  ,{{ $('Edit Fields1').item.json.contrato }}\n  ,{{ $('Edit Fields1').item.json.codigo_barra }})",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        784
+      ],
+      "id": "86fdc48b-a6b0-4cac-a022-54c193e2fb0b",
+      "name": "Microsoft SQL4",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwQP8J22rOQ1qDXn",
+          "name": "Microsoft SQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=rm '/files/naoLidos/{{ $('Read/Write Files from Disk').item.binary.data.fileName }}'\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        640
+      ],
+      "id": "064ba873-6de9-4650-88bf-352485570961",
+      "name": "Execute Command"
     }
   ],
   "pinData": {},
@@ -621,17 +773,6 @@
           {
             "node": "Extract from File1",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Information Extractor",
-            "type": "ai_languageModel",
             "index": 0
           }
         ]
@@ -792,22 +933,46 @@
     },
     "Execute Command4": {
       "main": [
-        []
+        [
+          {
+            "node": "Microsoft SQL4",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Execute Command5": {
       "main": [
-        []
+        [
+          {
+            "node": "Microsoft SQL3",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Execute Command6": {
       "main": [
-        []
+        [
+          {
+            "node": "Microsoft SQL2",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Execute Command7": {
       "main": [
-        []
+        [
+          {
+            "node": "Microsoft SQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Execute Command8": {
@@ -851,16 +1016,39 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
         ]
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "91ec5763-744d-4188-b7ec-487af4617963",
+  "versionId": "a6612ada-90a0-4d4b-9c2f-3ad51bc11538",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1e7948feed7ad6a9d739915ed2a5fb1a4448b6865bf0a3749eb9703dbe25ec1f"
